@@ -1,8 +1,9 @@
-#encode = utf-8
+
 from os import listdir
 
 from numpy import *
 import operator
+
 
 def image2vector(filename):
     returnVec = zeros((1,900))
@@ -13,6 +14,13 @@ def image2vector(filename):
             returnVec[0,30*i+j] = int(lineStr[j])
     return returnVec
 
+def txt2vector(string):
+    returnVec = zeros((1,900))
+    str = string.split('\n')
+    for i in range(30):
+        for j in range(30):
+            returnVec[0,30*i+j] = int(str[i][j])
+    return returnVec
 
 def classify0(inX,dataSet,labels,k):
     dataSetSize = dataSet.shape[0]
@@ -29,7 +37,7 @@ def classify0(inX,dataSet,labels,k):
     return sortedClassCount[0][0]
 
 
-
+#to test
 def handWritingClassTest():
     hwLable = []
     trainingFileList = listdir('trainingDigits')
@@ -55,5 +63,41 @@ def handWritingClassTest():
     print('\n the total number of errors is : %d'% errorCount)
     print('the total error rate is : %f'%(errorCount/float(mTest)))
 
+
+def handWritingClassification(vector):
+    hwLable = []
+    trainingFileList = listdir('trainingDigits')
+    m = len(trainingFileList)
+    trainingMat = zeros((m,900))
+    for i in range(m):
+        fileNameStr = trainingFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        hwLable.append(classNumStr)
+        trainingMat[i,:] = image2vector('trainingDigits/%s' % fileNameStr)
+    classifierResult = classify0(vector,trainingMat,hwLable,5)
+    return classifierResult
+
+
+
+
 if __name__ == '__main__':
     handWritingClassTest()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
